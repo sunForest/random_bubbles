@@ -26,17 +26,17 @@ body {
 <body>
 
 <script type="text/javascript">
+	
+	//some workaround for browser compatibility
+	var         transitionDurations = ["transitionDuration", "msTransitionDuration", 
+										"webkitTransitionDuration", "mozTransitionDuration", "oTransitionDuration"],
+		                 transforms = ["transform", "msTransform", "webkitTransform", "mozTransform", "oTransform"],
+		 transitionDurationProperty = getSupportedPropertyName(transitionDurations),
+		          transformProperty = getSupportedPropertyName(transforms);
 
-	var transitionDurations = ["transitionDuration", "msTransitionDuration", "webkitTransitionDuration", "mozTransitionDuration", "oTransitionDuration"];
-	var transitionDurationProperty = getSupportedPropertyName(transitionDurations);
-	console.log(transitionDurationProperty);
-
-	var transforms = ["transform", "msTransform", "webkitTransform", "mozTransform", "oTransform"];
-	var transformProperty = getSupportedPropertyName(transforms);
-	console.log(transformProperty);
 
 	var window_height = $(window).height(),
-		 window_width = $(window).width();
+	     window_width = $(window).width();
 
 	var i;
 	for (i = 0; i < 90; i++){
@@ -72,6 +72,7 @@ body {
 		$("body").append(new_bubble);
 	}
 
+	//kick out the animation
 	setTimeout(function() {
 		$(".bubble").each(function(index, bubble){
 		$(bubble).bind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function(e){
