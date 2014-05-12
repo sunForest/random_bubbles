@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta content="en-us" http-equiv="Content-Language">
+<meta charset="utf-8">
+<title>Random Bubbles</title>
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+
+<style>
+.bubble {
+	position: absolute;
+	background-color: orange;
+	box-shadow: 0px 0px 50px 50px rgba(255, 0, 0, 0.25);
+	opacity: 0.5;
+}
+
+body {
+	overflow: hidden;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<script type="text/javascript">
+
+	var transitionDurations = ["transitionDuration", "msTransitionDuration", "webkitTransitionDuration", "mozTransitionDuration", "oTransitionDuration"];
+	var transitionDurationProperty = getSupportedPropertyName(transitionDurations);
+	console.log(transitionDurationProperty);
+
+	var transforms = ["transform", "msTransform", "webkitTransform", "mozTransform", "oTransform"];
+	var transformProperty = getSupportedPropertyName(transforms);
+	console.log(transformProperty);
+
+	var window_height = $(window).height(),
+		 window_width = $(window).width();
+
+	var i;
+	for (i = 0; i < 90; i++){
+		var new_bubble = $('<div class="bubble"></div>');
+
+		//generate the core of the bubble
+		new_bubble.height(2 + "px");
+		new_bubble.width(2 + "px");
+		new_bubble.css("border-radius", "1px");
+
+		//move the bubble to a random position in the window;
+		new_bubble.css("top", rm(window_height, 0));
+		new_bubble.css("left", rm(window_width, 0));
+
+		//assign the bubble a random opacity
+		var opacity = rm(.6) + 0.3;
+		new_bubble.css("opacity", opacity);
+
+		//give the bubble a random color
+		var   color1 = rm(255, true),
+			  color2 = rm(255, true),
+			  color3 = rm(255, true),
+			   color = color1 + ", " + color2 + ", " + color3;
+			bk_color = "rgb(" + color + ")";
+		new_bubble.css("background-color", bk_color);
+
+		//give the bubble a shadow with a random size
+		var shadow_radius = 20 + rm(30, true);
+				   shadow = "0px 0px " + shadow_radius/4 + "px " + shadow_radius + "px " + "rgba(" + color + ", " + opacity + ")";
+		new_bubble.css("box-shadow", shadow);
+
+		//add the bubble to the window
+		$("body").append(new_bubble);
+	}
+
+	setTimeout(function() {
+		$(".bubble").each(function(index, bubble){
+		$(bubble).bind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function(e){
+			var theBubble = $(e.currentTarget);
+			setTranslate3DTransform(theBubble);
+			setTransitionDuration(theBubble);
+		});
+		setTransitionDuration($(bubble));
+		setTranslate3DTransform($(bubble));
+	});
+	}, 100);
+
+	//random generator
+	function rm(max, rounding) {
+		var random_number = Math.random() * max;
+		if (rounding) {
+			return Math.round(random_number);
+		}
+		return random_number;
+	}
+
+	function getSupportedPropertyName(properties) {
+		for (var i = 0; i < properties.length; i++) {
+			if (typeof document.body.style[properties[i]] != "undefined") {
+				return properties[i];
+			}
+		}
+		return null;
+	}
+
+	function setTranslate3DTransform(element) {
+		var value = "translate3d(" + getRandomXDelta(element) + "px" + ", " + getRandomYDelta(element) + "px" + ", 0)";
+		console.log(value);
+		element.css(transformProperty, value);
+	}
+
+	function setTransitionDuration(element) {
+		if (transitionDurationProperty) {
+			element.css(transitionDurationProperty, getRandomDuration());
+		}
+	}
+
+	function getRandomXDelta(element) {
+		var currentTop = parseFloat(element.css("left")),
+				newTop = rm(window_width, 0);
+		console.log(currentTop);
+		return newTop - currentTop;
+	}
+
+	function getRandomYDelta(element) {
+		var currentLeft = parseFloat(element.css("top")),
+				 newLeft = rm(window_height, 0);
+		return newLeft - currentLeft;
+	}
+ 
+	function getRandomDuration() {
+		return (1 + Math.random() * 5) + "s";
+	}
+
+
+</script>
+
+</body>
+
+
+</html>
